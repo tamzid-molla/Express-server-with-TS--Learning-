@@ -4,13 +4,13 @@ import bcrypt from "bcryptjs"
 
 
 const createUserIntoDB = async (payload: IUser) => {
-    const { name, email, password } = payload;
+    const { name, email, password,age,role } = payload;
     const hashedPassword = await bcrypt.hash(password, 10);
     const result = await pool.query(`
-        INSERT INTO users(name,email,password)
-        VALUES($1,$2,$3)
+        INSERT INTO users(name,email,password,age,role)
+        VALUES($1,$2,$3,$4,COALESCE($5,'user'))
         RETURNING *
-        `, [name, email, hashedPassword]);
+        `, [name, email, hashedPassword,age,role]);
     delete result.rows[0].password
     return result.rows[0]
 };
@@ -33,7 +33,7 @@ const getSingleUserFromDb = async (id: string) => {
 
 //update user
 const updateUserToDB = async (id: string, payload: IUser) => {
-    const { name, email, password } = payload;
+    const { name, email, password,age } = payload;
 
     const result = await pool.query(`
         UPDATE users
@@ -41,10 +41,11 @@ const updateUserToDB = async (id: string, payload: IUser) => {
         name = COALESCE($1,name),
         email = COALESCE($2,email),
         password = COALESCE($3,password),
+        age = COALESCE($4,age),
         updated_at = Now()
-        WHERE id = $4
+        WHERE id = $5
         RETURNING *
-        `, [name, email, password, id]);
+        `, [name, email, password,age, id]);
     return result.rows
 };
 

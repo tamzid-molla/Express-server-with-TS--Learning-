@@ -33,7 +33,7 @@ const loginUserIntoDB =async (payload: IAuth) => {
     const jwtPayload = {
         id: user.id,
         email: user.email,
-        password: user.password,
+        role : user.role,
         created_at: user.created_at,
         updated_at: user.updated_at
     };
