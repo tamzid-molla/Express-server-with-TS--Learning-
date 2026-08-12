@@ -38,8 +38,10 @@ const loginUserIntoDB =async (payload: IAuth) => {
         updated_at: user.updated_at
     };
     const accessToken = jwt.sign(jwtPayload, config.jwt_secret as string, { expiresIn: '1D' });
+    const refreshToken = jwt.sign(jwtPayload, config.refreshToken_secret as string, { expiresIn: '7D' });
     return {
-        accessToken
+        accessToken,
+        refreshToken
     }
 };
 

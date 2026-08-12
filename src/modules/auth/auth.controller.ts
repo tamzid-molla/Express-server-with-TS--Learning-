@@ -6,6 +6,13 @@ const loginUser = async(req: Request, res: Response) => {
     const data:IAuth = req.body;
     try {
         const result = await authService.loginUserIntoDB(data);
+        const { refreshToken } = result;
+
+        res.cookie('refreshToken', refreshToken, {
+            secure: false,
+            httpOnly: true,
+            sameSite: 'lax'
+        });
 
         res.status(200).json({
             success: true,
